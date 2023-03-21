@@ -7,6 +7,7 @@ import { MdDelete } from 'react-icons/md';
 import { client } from '../utils/client';
 import { topics } from '../utils/constants';
 import useAuthStore from '../store/authStore';
+import { BASE_URL } from '../utils';
 
 const Upload = () => {
 	const router = useRouter();
@@ -62,7 +63,7 @@ const Upload = () => {
 			}
 		} 
 
-		axios.post('http://localhost:3000/api/post', sanityPostDocument);
+		axios.post(`${BASE_URL}/api/post`, sanityPostDocument);
 		router.push('/');
 	}
 

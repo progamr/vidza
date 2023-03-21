@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Video } from '../../types';
@@ -25,6 +25,12 @@ const VideoCard = ({post}: IProps) => {
 			setIsVideoPlaying(true);
 		}
 	}
+
+	useEffect(() => {
+		if(videoRef.current) {
+			videoRef.current.muted = isVideoMuted;
+		}
+	}, [isVideoMuted]);
 
 	return (
 		<div className="flex flex-col border-b-2 border-gray-200 pd-6">
