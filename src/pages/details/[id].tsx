@@ -8,7 +8,10 @@ import { MdOutlineCancel } from 'react-icons/md';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 import { BASE_URL } from '../../utils';
+import useAuthStore from '../../store/authStore';
 import { Video } from '../../../types';
+import LikeButton from '../../components/LikeButton';
+import Comments from '../../components/Comments';
 
 interface IProps {
 	postDetails: Video,
@@ -19,6 +22,7 @@ const Details = ({postDetails}: IProps) => {
 	const [post, setPost] = useState(postDetails);
 	const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 	const [isVideoMuted, setIsVideoMuted] = useState(false);
+	const { userProfile }: any = useAuthStore();
 	const videoRef = useRef<HTMLVideoElement>(null);
 	const router = useRouter();
 
@@ -37,6 +41,18 @@ const Details = ({postDetails}: IProps) => {
 			videoRef.current.muted = isVideoMuted;
 		}
 	}, [post, isVideoMuted]);
+
+	const handleLikeAndDislike = async (like: boolean) => {
+		if(userProfile) {
+			const { data } = await axios.put(`${BASE_URL}/api/like`, {
+				userId: userProfile._id,
+				postId: post._id,
+				like
+			});
+
+			setPost({ ...post, likes: data.likes });
+		}
+	}
 
 	{/* TODO: Enhance this to better UI */}
 	if(! post) return (<div>Video not found</div>);
@@ -116,6 +132,12 @@ const Details = ({postDetails}: IProps) => {
 					<p className="px-10 text-lg text-gray-600">
 						{post.caption}
 					</p>
+					<div className="mt-10 px-10">
+						{userProfile && (
+							<LikeButton likes={post.likes} handleLikeAndDislike={handleLikeAndDislike} />
+						)}
+					</div>
+					<Comments />
 				</div>
 			</div>
 		</div>
@@ -140,6 +162,3 @@ export const getServerSideProps = async ({
 }
 
 export default Details;
-/**
- * post details page, add BASE_URL env var and use it for the usage of BE base URL in the code, navigate the user to home page after success upload 
- */
