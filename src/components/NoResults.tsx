@@ -1,12 +1,14 @@
 import React from 'react'
 
 interface IProps {
-	text: string;
+	children: React.ReactNode;
 }
 
-const NoResults = ({text}: IProps) => {
+const NoResults = ({children}: IProps) => {
   return (
-	<div>{text}</div>
+	<div className="flex flex-col justify-center items-center h-full w-full">
+		{children}
+	</div>
   )
 }
 

@@ -20,6 +20,8 @@ interface IProps {
 const Details = ({postDetails}: IProps) => {
 
 	const [post, setPost] = useState(postDetails);
+	const [comment, setComment] = useState('');
+	const [isPostingComment, setIsPostingComment] = useState(false);
 	const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 	const [isVideoMuted, setIsVideoMuted] = useState(false);
 	const { userProfile }: any = useAuthStore();
@@ -51,6 +53,21 @@ const Details = ({postDetails}: IProps) => {
 			});
 
 			setPost({ ...post, likes: data.likes });
+		}
+	}
+
+	const addComment = async (e: any) => {
+		e.preventDefault();
+		if (userProfile && comment) {
+			setIsPostingComment(true);
+			const { data }: any = await axios.put(`${BASE_URL}/api/post/${post._id}`, {
+				userId: userProfile._id,
+				comment
+			});
+			console.log('Res from add co', data);
+			setPost({...post, comments: data.comments});
+			setComment('');
+			setIsPostingComment(false);
 		}
 	}
 
@@ -137,7 +154,13 @@ const Details = ({postDetails}: IProps) => {
 							<LikeButton likes={post.likes} handleLikeAndDislike={handleLikeAndDislike} />
 						)}
 					</div>
-					<Comments />
+					<Comments
+						comment={comment}
+						setComment={setComment}
+						addComment={addComment}
+						isPostingComment={isPostingComment}
+						comments={post.comments}
+					/>
 				</div>
 			</div>
 		</div>
