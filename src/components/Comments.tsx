@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { GoVerified } from 'react-icons/go';
 import { BiCommentX } from 'react-icons/bi';
+import { IUser } from '../../types';
 import useAuthStore from '../store/authStore';
 import NoResults from './NoResults';
 
@@ -18,7 +19,7 @@ interface IComment {
 	comment: string,
 	length?: number,
 	_key: string,
-	postedBy: { _ref: string }
+	postedBy: { _ref: string, _id: string }
 }
 
 
@@ -29,7 +30,9 @@ const Comments = ({
 	isPostingComment,
 	comments,
 }: IProps) => {
-	const { userProfile } = useAuthStore();
+	const { userProfile, users } = useAuthStore();
+	console.log('Coms', comments);
+	console.log('uss', users);
 
 	return (
 		<div className="border-t-2 border-gray-200 pt-4 px-10 
@@ -37,7 +40,44 @@ const Comments = ({
 			<div className="overflow-scroll lg:h-[475px]">
 				{
 					comments?.length ? (
-						<div>comments</div>
+						comments.map((item, index) => (
+							<>
+								{
+									users.map((user: IUser) => (
+										user._id === (item.postedBy._ref || item.postedBy._id) && (
+											<div className="p-2 items-center" key={index}>
+												<Link href={`/profile/${user._id}`}>
+													<div className="flex gap-3 items-start cursor-pointer">
+														<div className="w-8 h-8">
+															<Image
+																src={user.image}
+																width={34}
+																height={34}
+																className="rounded-full"
+																alt="user profile"
+																layout="responsive"
+															/>
+														</div>
+														<div className="hidden xl:block">
+															<p className="flex gap-1 items-center text-md font-bold text-primary lowercase">
+																{user.userName.replaceAll(' ', '')}
+																<GoVerified className="text-blue-400" />
+															</p>
+															<p className="capitalize text-gray-400 text-xs">
+																{user.userName}
+															</p>
+														</div>
+													</div>
+												</Link>
+												<div>
+													<p>{item.comment}</p>
+												</div>
+											</div>
+										)
+									))
+								}
+							</>
+						))
 					) : (
 						<NoResults>
 							<p className="text-8xl">
