@@ -1,0 +1,4 @@
+- ## Features
+  - (1) Show all user profiles.
+    - (1.1) First we get all the users data and store it in the global state of the app.
+    - (1.2) 
