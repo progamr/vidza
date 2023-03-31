@@ -5,7 +5,8 @@ const nextConfig = {
 	domains: [
 		'media.licdn.com',
 		'lh3.googleusercontent.com',,
-		'drive.google.com'
+		'drive.google.com',
+		'cdn.shopify.com',
 	]
   }
 }
